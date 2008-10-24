@@ -1,13 +1,13 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.3
+ *	version 0.3.4
  * Author: Jim Palmer
  * Released under MIT license.
  */
 (function($) {
 	$.fn.jCal = function (opt) {
 		$.jCal(this, opt);
-	}
+	};
 	$.jCal = function (target, opt) {
 		opt = $.extend({
 			day:			new Date(),									// date to drive first cal
@@ -42,8 +42,7 @@
 			});
 		if ( $(opt._target).data('day') && $(opt._target).data('days') ) 
 			reSelectDates(target, $(opt._target).data('day'), $(opt._target).data('days'), opt);
-	}
-
+	};
 	function drawCalControl (target, opt) {
 		$(target).append(
 			'<div class="jCal">' + 
@@ -54,7 +53,6 @@
 					'</div>' +
 					( (opt.ind == ( opt.showMonths - 1 )) ? '<div class="right" />' : '' ) +
 			'</div>');
-
 		if ( opt.monthSelect )
 			$(target).find('.jCal .monthName, .jCal .monthYear')
 				.bind('mouseover', $.extend( {}, opt ),
@@ -104,7 +102,6 @@
 									$(this).toggleClass('monthSelectHover');
 							});
 					});
-			
 		$(target).find('.jCal .left').bind('click', $.extend( {}, opt ),
 			function (e) {
 				if ($('.jCalMask', e.data._target).length > 0) return false;
@@ -115,25 +112,20 @@
 						mD.h = ((cH > mD.h) ? cH : mD.h);
 					} );
 				$(e.data._target).prepend('<div class="jCalMo"></div>');
-
 				e.data.day = new Date( $('div[id*=' + e.data.cID + 'd_]:first', e.data._target).attr('id').replace(e.data.cID + 'd_', '').replace(/_/g, '/') );
 				e.data.day.setDate(1);
 				e.data.day.setMonth( e.data.day.getMonth() - 1 );
 				drawCalControl($('.jCalMo:first', e.data._target), e.data);
 				drawCal($('.jCalMo:first', e.data._target), e.data);
-
 				if (e.data.showMonths > 1) {
 					$('.right', e.data._target).clone(true).appendTo( $('.jCalMo:eq(1) .jCal', e.data._target) );
 					$('.left:last, .right:last', e.data._target).remove();
 				}
-
 				$(e.data._target).append('<div class="jCalSpace" style="width:'+mD.w+'px; height:'+mD.h+'px;"></div>');
-
 				$('.jCalMo', e.data._target).wrapAll(
 					'<div class="jCalMask" style="clip:rect(0px '+mD.w+'px '+mD.h+'px 0px); width:'+ ( mD.w + ( mD.w / e.data.showMonths ) ) +'px; height:'+mD.h+'px;">' + 
 						'<div class="jCalMove"></div>' +
 					'</div>');
-
 				$('.jCalMove', e.data._target).css('margin-left', ( ( mD.w / e.data.showMonths ) * -1 ) + 'px').css('opacity', 0.5).animate({ marginLeft:'0px' }, 'fast',
 					function () {
 						$(this).children('.jCalMo:not(:last)').appendTo( $(e.data._target) );
@@ -152,25 +144,20 @@
 						mD.h = ((cH > mD.h) ? cH : mD.h);
 					} );
 				$(e.data._target).append('<div class="jCalMo"></div>');
-
 				e.data.day = new Date( $('div[id^=' + e.data.cID + 'd_]:last', e.data._target).attr('id').replace(e.data.cID + 'd_', '').replace(/_/g, '/') );
 				e.data.day.setDate(1);
 				e.data.day.setMonth( e.data.day.getMonth() + 1 );
 				drawCalControl($('.jCalMo:last', e.data._target), e.data);
 				drawCal($('.jCalMo:last', e.data._target), e.data);
-
 				if (e.data.showMonths > 1) {
 					$('.left', e.data._target).clone(true).prependTo( $('.jCalMo:eq(1) .jCal', e.data._target) );
 					$('.left:first, .right:first', e.data._target).remove();
 				}
-
 				$(e.data._target).append('<div class="jCalSpace" style="width:'+mD.w+'px; height:'+mD.h+'px;"></div>');
-
 				$('.jCalMo', e.data._target).wrapAll(
 					'<div class="jCalMask" style="clip:rect(0px '+mD.w+'px '+mD.h+'px 0px); width:'+ ( mD.w + ( mD.w / e.data.showMonths ) ) +'px; height:'+mD.h+'px;">' + 
 						'<div class="jCalMove"></div>' +
 					'</div>');
-
 				$('.jCalMove', e.data._target).css('opacity', 0.5).animate({ marginLeft:( ( mD.w / e.data.showMonths ) * -1 ) + 'px' }, 'fast',
 					function () {
 						$(this).children('.jCalMo:not(:first)').appendTo( $(e.data._target) );
@@ -179,16 +166,13 @@
 							reSelectDates(e.data._target, $(e.data._target).data('day'), $(e.data._target).data('days'), e.data);
 						$(this).children('.jCalMo:not(:first)').removeClass('');
 					});
-
 			});
 		$('.jCal', target).each(
 			function () {
 				var width = $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 );
 				$('.month', this).css('width', width).find('.monthName, .monthYear').css('width', ((width / 2) - 4 ));
 			});
-
-	}
-	
+	};	
 	function reSelectDates (target, day, days, opt) {
 		var fDay = new Date(day.getTime());
 		var sDay = new Date(day.getTime());
@@ -201,10 +185,9 @@
 			sDay.setDate( sDay.getDate() + 1 );
 		}
 		if ( fC && typeof opt.callback == 'function' ) opt.callback( day, days );
-	}
-
+	};
 	function drawCal (target, opt) {
-		for (var ds in opt.dow)
+		for (var ds=0, length=opt.dow.length; ds < length; ds++)
 			$(target).append('<div class="dow">' + opt.dow[ds] + '</div>');
 		var fd = new Date( new Date( opt.day.getTime() ).setDate(1) );
 		var ldlm = new Date( new Date( fd.getTime() ).setDate(0) );
@@ -247,5 +230,5 @@
 						$(e.data._target).data('day', e.data.day).data('days', di);
 					}
 			});
-	}
+	};
 })(jQuery);
