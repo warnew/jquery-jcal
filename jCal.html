@@ -27,8 +27,16 @@
 							$(currDay, this._target).append('<div class="dInfo"><span style="color:#ccc">$</span>1231</div>');
 							dCursor.setDate( dCursor.getDate() + 1 );
 						}
-						$('#calOneResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-							( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						// if calling the function on already selected day(s)
+						if ( typeof $(this._target).data('day') == 'object' &&
+							 $(this._target).data('day').getTime() == day.getTime() &&
+							 $(this._target).data('days') == days) {
+							$('#calOneResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + ' RECLICKED</div>');
+						} else {
+							$('#calOneResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						}
 						return true;
 					}
 				});
@@ -41,8 +49,16 @@
 						return (day.getDay() != 6);
 					},
 				callback:		function (day, days) {
-						$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-							( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						// if calling the function on already selected day(s)
+						if ( typeof $(this._target).data('day') == 'object' &&
+							 $(this._target).data('day').getTime() == day.getTime() &&
+							 $(this._target).data('days') == days) {
+							$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + ' RECLICKED</div>');
+						} else {
+							$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						}
 						return true;
 					}
 				});

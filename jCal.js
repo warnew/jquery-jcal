@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.2.3
+ *	version 0.3.0
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -45,15 +45,13 @@
 	}
 
 	function drawCalControl (target, opt) {
-	
 		$(target).append(
 			'<div class="jCal">' + 
 					( (opt.ind == 0) ? '<div class="left"><img src="_left.gif"></div>' : '' ) + 
 					'<div class="month">' + opt.ml[opt.day.getMonth()] + ' ' + opt.day.getFullYear() + '</div>' +
 					( (opt.ind == ( opt.showMonths - 1 )) ? '<div class="right"><img src="_right.gif"></div>' : '' ) +
 			'</div>');
-			
-		$(target).find('.jCal .left').bind("click",
+		$(target).find('.jCal .left').bind('click',
 			function (e) {
 				if ($('.jCalMask', opt._target).length > 0) return false;
 				var mD = { w:0, h:0 };
@@ -84,13 +82,13 @@
 
 				$('.jCalMove', opt._target).css('margin-left', ( ( mD.w / opt.showMonths ) * -1 ) + 'px').css('opacity', 0.5).animate({ marginLeft:'0px' }, 'fast',
 					function () {
-						$(this).children('.jCalMo:not(:last)').clone(true).appendTo( $(opt._target) );
+						$(this).children('.jCalMo:not(:last)').appendTo( $(opt._target) );
 						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
+						if ( typeof $(opt._target).data('day') == 'object' ) 
+							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'));
 					});
 			});
-
-
-		$(target).find('.jCal .right').bind("click", 
+		$(target).find('.jCal .right').bind('click', 
 			function (e) {
 				if ($('.jCalMask', opt._target).length > 0) return false;
 				var mD = { w:0, h:0 };
@@ -121,11 +119,25 @@
 
 				$('.jCalMove', opt._target).css('opacity', 0.5).animate({ marginLeft:( ( mD.w / opt.showMonths ) * -1 ) + 'px' }, 'fast',
 					function () {
-						$(this).children('.jCalMo:not(:first)').clone(true).appendTo( $(opt._target) );
+						$(this).children('.jCalMo:not(:first)').appendTo( $(opt._target) );
 						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
+						if ( typeof $(opt._target).data('day') == 'object' ) 
+							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'));
 					});
+
 			});
-			
+	}
+	
+	function reSelectDates (target, day, days) {
+		var fDay = new Date(day.getTime());
+		var sDay = new Date(day.getTime());
+		for (var di=0; di < days; di++) {
+			if ( $(target).find('div[id*=d_' + (sDay.getMonth() + 1) + '_' + sDay.getDate() + '_' + sDay.getFullYear() + ']').length > 0 ) {
+				$(target).find('div[id*=d_' + (fDay.getMonth() + 1) + '_' + fDay.getDate() + '_' + fDay.getFullYear() + ']').click();
+				break;
+			}
+			sDay.setDate( sDay.getDate() + 1 );
+		}
 	}
 
 	function drawCal (target, opt) {
@@ -154,22 +166,24 @@
 			var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
 			if (opt.forceWeek) osDate.setDate( osDate.getDate() + (opt.dayOffset - osDate.getDay()) );
 			var sDate = new Date ( osDate.getTime() );
-			if (e.type == 'click') 
-				$('div[id^=' + opt.cID + 'd_].selectedDay', $(opt._target).parent()).removeClass('selectedDay').animate(
-					{ backgroundColor:opt.defaultBG }, 'fast', function () {
-						$(this).css('backgroundColor', '');
-					});
+			if (e.type == 'click')
+				$('div[id*=d_]', opt._target).stop().removeClass('selectedDay').removeClass('overDay').css('backgroundColor', '');
 			for (var di=0; di < opt.days; di++) {
 				var currDay = $(opt._target).find('#' + opt.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
 				if ( currDay.length == 0 || $(currDay).hasClass('invday') ) break;
-				$(currDay).toggleClass( ( (e.type == 'click') ? 'selectedDay' : 'overDay' ) );
-				if (e.type == 'click') $(currDay).stop().animate({ backgroundColor:opt.selectedBG }, 'fast', function () {
-					$(this).css('backgroundColor', opt.selectedBG); 
-				});
-				else $(currDay).css('backgroundColor', '').stop();
+				if ( e.type == 'mouseover' )
+					$(currDay).addClass('overDay');
+				else if ( e.type == 'mouseout' )
+					$(currDay).stop().removeClass('overDay').css('backgroundColor', '');
+				else if ( e.type == 'click' )
+					$(currDay).stop().addClass('selectedDay').animate({ backgroundColor:opt.selectedBG }, 200);
 				sDate.setDate( sDate.getDate() + 1 );
 			}
-			if (e.type == 'click') opt.callback( osDate, di );
+			if (e.type == 'click') {
+				opt.day = osDate;
+				opt.callback( osDate, di );
+				$(opt._target).data('day', opt.day).data('days', di);
+			}
 		});
 	}
 })(jQuery);
