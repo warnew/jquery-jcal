@@ -8,8 +8,7 @@
 }
 /* default dimensions and justification for each month not including title */
 .jCalMo {
-	/* each day width + border-left + border-right */
-	width:224px;
+	width:224px;		/* each day width + border-left + border-right */
 	float:left;
 	overflow:visible;
 	height:100%;
@@ -18,16 +17,58 @@
 	white-space:nowrap;
 }
 /* top month display block - i.e. January */
-.jCal .month {
+.jCal .month, .jCal .monthSelect, .jCal .monthName, .jCal .monthYear {
+	line-height:16px;
 	height:16px;
-	/* jCalMo - left/right button width */
-	width:192px;
 	text-align:center;
 	vertical-align:bottom;
 	font-family:Tahoma;
 	font-size:8pt;
 	color:#000000;
+	cursor:pointer;
 	float:left;
+}
+/* month name per calendar style - includes left/right padding and alignment */
+.jCal .monthName {
+	padding-left:2px;
+	padding-right:2px; 
+	text-align:right;
+}
+/* year per calendar style - includes left/right padding and alignment */
+.jCal .monthYear {
+	float:right;
+	padding-left:2px;
+	padding-right:2px;
+	text-align:left;
+}
+/* hilight style for new month combobox pulldown for hover */
+.jCal .monthSelect {
+	background:#EEE url(eeGrad2.gif) bottom repeat-x;
+}
+/* do not edit - this enables the new month combobox selector */
+.jCal .monthSelector {
+	position:absolute;
+}
+/* do not edit - this enables the new month combobox selector "shadow" for capturing auto-hide */
+.jCal .monthSelectorShadow {
+	position:absolute;
+	background:#808080;
+	padding:0px;
+}
+/* this is the hover for the month name */
+.jCal .monthNameHover {
+	background:#EDEDED url(double-arrow-vert.gif) center left no-repeat;
+	color:#808080;
+}
+/* this is the hover for the year */
+.jCal .monthYearHover {
+	background:#EDEDED url(double-arrow-vert.gif) center right no-repeat;
+	color:#808080;
+}
+/* this is the hover for the new month or year hover in the new combobox selection */
+.jCal .monthSelectHover {
+	background:#069;
+	color:#FFF;
 }
 /* day block dimensions and style - for all day blocks */
 .jCalMo .dow, .jCalMo .day, .jCalMo .pday, .jCalMo .aday, .jCalMo .overDay, .jCalMo .invday, .jCalMo .selectedDay {
@@ -35,16 +76,16 @@
 	font-family:Tahoma;
 	font-size:8pt;
 	color:#000000;
-	border-right:1px solid #CCCCCC;
-	border-bottom:1px solid #CCCCCC;
-	border-left:1px solid #EEEEEE;
+	border-right:1px solid #CCC;
+	border-bottom:1px solid #CCC;
+	border-left:1px solid #EEE;
 	text-align:center;
 	cursor:default;
 	float:left;
 }
 /* day of week header specific style */
 .jCalMo .dow {
-	background:#EEEEEE url(eeGrad.gif) bottom repeat-x;
+	background:#EEE url(eeGrad.gif) bottom repeat-x;
 	border-bottom:0px;
 }
 /* actual calendar day default style */
@@ -55,7 +96,7 @@
 /* selectable calendar day specific style */
 .jCalMo .day {
 	cursor:pointer;
-	background:#ffffff;
+	background:#FFF;
 }
 /* blacked-out calendar day specific style */
 .jCalMo .invday {
@@ -67,22 +108,23 @@
 .jCalMo .pday, .jCalMo .aday {
 	height:30px;
 	background:#e3e3e3;
-	color:#CCCCCC;
+	color:#CCC;
 }
 /* selected day */
 .jCalMo .selectedDay {
-	color:#ffffff;
+	color:#FFF;
 	/* must use rgb() syntax for jquery.color.js compliance */
 	background:rgb(0, 143, 214);
 }
 /* mouseover hilighted selectable day */
 .jCalMo .overDay {
-	color:#ffffff;
+	color:#FFF;
 	/* must use rgb() syntax for jquery.color.js compliance */
 	background:rgb(0, 102, 153);
 }
 /* left month navigation button - no need to change */
 .jCal .left {
+	background:url(_left.gif) center center no-repeat;
 	width:16px;
 	height:16px;
 	vertical-align:middle;
@@ -91,6 +133,7 @@
 }
 /* right month navigation button - no need to change */
 .jCal .right {
+	background:url(_right.gif) center center no-repeat;
 	width:16px;
 	height:16px;
 	vertical-align:middle;

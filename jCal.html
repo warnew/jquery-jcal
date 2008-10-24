@@ -3,8 +3,9 @@
 <html>
 <head>
 
-	<script language="JavaScript" type="text/javascript" src="jquery.1.2.6.patched.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jquery.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jquery.color.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jquery.animate.clip.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jCal.js"></script>
 
 	<link rel="stylesheet" type="text/css" href="jCal.css">
@@ -15,11 +16,13 @@
 				day:			new Date(),
 				days:			4,
 				showMonths:		2,
+				monthSelect:	true,
 				dCheck:			function (day) {
 						if ( day.getTime() == (new Date('8/7/2008')).getTime() ) return false;
 						return (day.getDate() != 3);
 					},
 				callback:		function (day, days) {
+						$('#calOneDays').val( days );
 						$(this._target).find('.dInfo').remove();
 						var dCursor = new Date( day.getTime() );
 						for (var di=0; di < days; di++) {
@@ -30,7 +33,7 @@
 						// if calling the function on already selected day(s)
 						if ( typeof $(this._target).data('day') == 'object' &&
 							 $(this._target).data('day').getTime() == day.getTime() &&
-							 $(this._target).data('days') == days) {
+							 $(this._target).data('days') == days ) {
 							$('#calOneResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
 								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + ' RECLICKED</div>');
 						} else {
@@ -44,21 +47,15 @@
 				day:			new Date( (new Date()).setMonth( (new Date()).getMonth() + 2 ) ),
 				days:			2,
 				showMonths:		1,
+				monthSelect:	true,
 				sDate:			new Date(),
 				dCheck:			function (day) {
 						return (day.getDay() != 6);
 					},
 				callback:		function (day, days) {
-						// if calling the function on already selected day(s)
-						if ( typeof $(this._target).data('day') == 'object' &&
-							 $(this._target).data('day').getTime() == day.getTime() &&
-							 $(this._target).data('days') == days) {
-							$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + ' RECLICKED</div>');
-						} else {
-							$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-								( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
-						}
+						$('#calTwoDays').val( days );
+						$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+							( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
 						return true;
 					}
 				});
@@ -79,22 +76,42 @@
 </head>
 <body marginheight=0 marginwidth=0 topmargin=0 rightmargin=0 leftmargin=0>
 
-	<table width="100%">
-		<tr>
-			<td align=left id="calOne" valign=top style="padding:10px; background:#E3E3E3;">
-				loading calendar one
-			</td>
-			<td align=left id="calTwo" valign=top style="padding:10px; background:#E3E3E3;">
-				loading calendar two
-			</td>
-		<tr>
-			<tr>
-				<td align=left id="calOneResult" valign=top style="padding:10px; background:#E3E3E3;"></td>
-				<td align=left id="calTwoResult" valign=top style="padding:10px; background:#E3E3E3;"></td>
-			<tr>
-	</table>
-
-	<div id="ttt"></div>
+<table>
+	<tr>
+		<td align=left valign=top style="padding:10px; background:#E3E3E3;">
+			<strong>Two Month Demo</strong><br>
+			Select Number of Days
+			<select id="calOneDays" onChange="$('#calOne').data('days', $('#calOneDays').val());">
+				<option value="1">1</option><option value="2">2</option><option value="3">3</option>
+				<option value="4" SELECTED>4</option><option value="5">5</option><option value="6">6</option>
+				<option value="7">7</option><option value="8">8</option><option value="9">9</option>
+				<option value="10">10</option><option value="11">11</option><option value="12">12</option>
+			</select>
+		</td>
+		<td align=left valign=top style="padding:10px; background:#E3E3E3;">
+			<strong>Single Month Demo</strong><br>
+			Select Number of Days
+			<select id="calTwoDays" onChange="$('#calTwo').data('days', $('#calTwoDays').val());">
+				<option value="1">1</option><option value="2" SELECTED>2</option><option value="3">3</option>
+				<option value="4">4</option><option value="5">5</option><option value="6">6</option>
+				<option value="7">7</option><option value="8">8</option><option value="9">9</option>
+				<option value="10">10</option><option value="11">11</option><option value="12">12</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td align=left id="calOne" valign=top style="padding:10px; background:#E3E3E3;">
+			loading calendar one...
+		</td>
+		<td align=left id="calTwo" valign=top style="padding:10px; background:#E3E3E3;">
+			loading calendar two...
+		</td>
+	</tr>
+	<tr>
+		<td align=left id="calOneResult" valign=top style="padding:10px; background:#E3E3E3;"></td>
+		<td align=left id="calTwoResult" valign=top style="padding:10px; background:#E3E3E3;"></td>
+	</tr>
+</table>
 
 </body>
 </html>
