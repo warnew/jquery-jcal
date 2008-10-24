@@ -1,3 +1,8 @@
+/*
+ * jCal calendar multi-day and multi-month datepicker plugin for jQuery
+ * Author: Jim Palmer
+ * Released under MIT license.
+ */
 (function($) {
 	$.fn.jCal = function (opt) {
 		$.jCal(this, opt);
@@ -14,8 +19,8 @@
 			selectedBG:		'rgb(0, 143, 214)',
 			defaultBG:		'rgb(255, 255, 255)',
 			_target:		target,
-			ml:			['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-			ms:			['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			ml:				['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S']
 		}, opt);
 		opt.day.setDate(1);
@@ -23,14 +28,105 @@
 		for (var sm=0; sm < opt.showMonths; sm++)
 			$(target).append('<div class="jCalMo"></div>');
 		opt.cID = 'c' + $('.jCalMo').length;
-		$(target).find('.jCalMo').each(
+		$('.jCalMo', target).each(
 			function (ind) {
+				drawCalControl($(this), $.extend( {}, opt, { 'ind':ind, 
+						'day':new Date( new Date( opt.day.getTime() ).setMonth( new Date( opt.day.getTime() ).getMonth() + ind ) ) }
+					));
 				drawCal($(this), $.extend( {}, opt, { 'ind':ind, 
 						'day':new Date( new Date( opt.day.getTime() ).setMonth( new Date( opt.day.getTime() ).getMonth() + ind ) ) }
 					));
-			}
-		);
+			});
+		$('.jCal', target).each(
+			function () {
+				$('.month', this).css('width', $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 ) + 'px')
+			});
 	}
+
+	function drawCalControl (target, opt) {
+	
+		$(target).append(
+			'<div class="jCal">' + 
+					( (opt.ind == 0) ? '<div class="left"><img src="_left.gif"></div>' : '' ) + 
+					'<div class="month">' + opt.ml[opt.day.getMonth()] + ' ' + opt.day.getFullYear() + '</div>' +
+					( (opt.ind == ( opt.showMonths - 1 )) ? '<div class="right"><img src="_right.gif"></div>' : '' ) +
+			'</div>');
+			
+		$(target).find('.jCal .left').bind("click",
+			function (e) {
+				if ($('.jCalMask', opt._target).length > 0) return false;
+				var mD = { w:0, h:0 };
+				$('.jCalMo', opt._target).each( function () { 
+						mD.w += $(this).width() + parseInt($(this).css('padding-left')) + parseInt($(this).css('padding-right')); 
+						var cH = $(this).height() + parseInt($(this).css('padding-top')) + parseInt($(this).css('padding-bottom')); 
+						mD.h = ((cH > mD.h) ? cH : mD.h);
+					} );
+				$(opt._target).prepend('<div class="jCalMo"></div>');
+
+				opt.day = new Date( $('.day[id^=' + opt.cID + 'd_]:first', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
+				opt.day.setDate(1);
+				opt.day.setMonth( opt.day.getMonth() - 1 );
+				drawCalControl($('.jCalMo:first', opt._target), opt);
+				drawCal($('.jCalMo:first', opt._target), opt);
+
+				if (opt.showMonths > 1) {
+					$('.right', opt._target).clone(true).appendTo( $('.jCalMo:eq(1) .jCal', opt._target) );
+					$('.left:last, .right:last', opt._target).remove();
+				}
+
+				$(opt._target).append('<div class="jCalSpace" style="width:'+mD.w+'px; height:'+mD.h+'px;"></div>');
+
+				$('.jCalMo', opt._target).wrapAll(
+					'<div class="jCalMask" style="clip:rect(0px '+mD.w+'px '+mD.h+'px 0px); width:'+ ( mD.w + ( mD.w / opt.showMonths ) ) +'px; height:'+mD.h+'px;">' + 
+						'<div class="jCalMove"></div>' +
+					'</div>');
+
+				$('.jCalMove', opt._target).css('margin-left', ( ( mD.w / opt.showMonths ) * -1 ) + 'px').css('opacity', 0.5).animate({ marginLeft:'0px' }, 'fast',
+					function () {
+						$(this).children('.jCalMo:not(:last)').clone(true).appendTo( $(opt._target) );
+						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
+					});
+			});
+
+
+		$(target).find('.jCal .right').bind("click", 
+			function (e) {
+				if ($('.jCalMask', opt._target).length > 0) return false;
+				var mD = { w:0, h:0 };
+				$('.jCalMo', opt._target).each( function () { 
+						mD.w += $(this).width() + parseInt($(this).css('padding-left')) + parseInt($(this).css('padding-right')); 
+						var cH = $(this).height() + parseInt($(this).css('padding-top')) + parseInt($(this).css('padding-bottom')); 
+						mD.h = ((cH > mD.h) ? cH : mD.h);
+					} );
+				$(opt._target).append('<div class="jCalMo"></div>');
+
+				opt.day = new Date( $('.day[id^=' + opt.cID + 'd_]:last', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
+				opt.day.setDate(1);
+				opt.day.setMonth( opt.day.getMonth() + 1 );
+				drawCalControl($('.jCalMo:last', opt._target), opt);
+				drawCal($('.jCalMo:last', opt._target), opt);
+
+				if (opt.showMonths > 1) {
+					$('.left', opt._target).clone(true).prependTo( $('.jCalMo:eq(1) .jCal', opt._target) );
+					$('.left:first, .right:first', opt._target).remove();
+				}
+
+				$(opt._target).append('<div class="jCalSpace" style="width:'+mD.w+'px; height:'+mD.h+'px;"></div>');
+
+				$('.jCalMo', opt._target).wrapAll(
+					'<div class="jCalMask" style="clip:rect(0px '+mD.w+'px '+mD.h+'px 0px); width:'+ ( mD.w + ( mD.w / opt.showMonths ) ) +'px; height:'+mD.h+'px;">' + 
+						'<div class="jCalMove"></div>' +
+					'</div>');
+
+				$('.jCalMove', opt._target).css('opacity', 0.5).animate({ marginLeft:( ( mD.w / opt.showMonths ) * -1 ) + 'px' }, 'fast',
+					function () {
+						$(this).children('.jCalMo:not(:first)').clone(true).appendTo( $(opt._target) );
+						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
+					});
+			});
+			
+	}
+
 	function drawCal (target, opt) {
 		for (var ds in opt.dow)
 			$(target).append('<div class="dow">' + opt.dow[ds] + '</div>');
@@ -49,24 +145,9 @@
 					) 
 				)
 			);
-		$(target).find('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+1)').before( '<br style="clear:both; font-size:0.1em;" />' );
-		$(target).prepend( '<div style="' + ( (opt.ind == 0) ? 'text-align:left;' : 
-					( (opt.ind == ( opt.showMonths - 1 )) ? 'text-align:right;' : '' ) ) + '">' + 
-				'<div class="jCal">' + 
-					( (opt.ind == 0) ? '<span class="left"><img src="_left.gif"></span>' : '' ) + 
-					'<span class="month">' + opt.ml[opt.day.getMonth()] + ' ' + opt.day.getFullYear() + '</span>' +
-					( (opt.ind == ( opt.showMonths - 1 )) ? '<span class="right"><img src="_right.gif"></span>' : '' ) +
-				'</div>' +
-			'</div>');
-		$(target).find('.jCal .left').bind("click", function (e) {
-				opt.day.setMonth( opt.day.getMonth() - 1);
-				$.jCal($(target).parent(), opt);
-			});
-		$(target).find('.jCal .right').bind("click", function (e) {
-				opt.day.setMonth( opt.day.getMonth() + ( (opt.showMonths == 1) ? 1 : 0 ) );
-				$.jCal($(target).parent(), opt);
-			});
+		$(target).find('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+2)').before( '<br style="clear:both; font-size:0.1em;" />' );
 		$(target).find('div[id^=' + opt.cID + 'd_]:not(.invday)').bind("mouseover mouseout click", function(e){
+			if ($('.jCalMask', opt._target).length > 0) return false;
 			var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
 			var sDate = new Date ( osDate.getTime() );
 			if (e.type == 'click') 
