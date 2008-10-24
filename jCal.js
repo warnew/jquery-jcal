@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.0
+ *	version 0.3.1
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -24,7 +24,7 @@
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			_target:		target										// target DOM element - no need to set extend this variable
 		}, opt);
-		opt.day.setDate(1);
+		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), opt.day.getDate());
 		$(target).stop().empty();
 		for (var sm=0; sm < opt.showMonths; sm++)
 			$(target).append('<div class="jCalMo"></div>');
@@ -62,7 +62,7 @@
 					} );
 				$(opt._target).prepend('<div class="jCalMo"></div>');
 
-				opt.day = new Date( $('.day[id^=' + opt.cID + 'd_]:first', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
+				opt.day = new Date( $('div[id*=' + opt.cID + 'd_]:first', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
 				opt.day.setDate(1);
 				opt.day.setMonth( opt.day.getMonth() - 1 );
 				drawCalControl($('.jCalMo:first', opt._target), opt);
@@ -99,7 +99,7 @@
 					} );
 				$(opt._target).append('<div class="jCalMo"></div>');
 
-				opt.day = new Date( $('.day[id^=' + opt.cID + 'd_]:last', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
+				opt.day = new Date( $('div[id^=' + opt.cID + 'd_]:last', opt._target).attr('id').replace(opt.cID + 'd_', '').replace(/_/g, '/') );
 				opt.day.setDate(1);
 				opt.day.setMonth( opt.day.getMonth() + 1 );
 				drawCalControl($('.jCalMo:last', opt._target), opt);
