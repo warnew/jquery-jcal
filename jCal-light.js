@@ -1,6 +1,6 @@
 /*
- * jCal-light calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.4
+ * jCal calendar multi-day and multi-month datepicker plugin for jQuery
+ *	version 0.3.6
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -24,7 +24,7 @@
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			_target:		target										// target DOM element - no need to set extend this variable
 		}, opt);
-		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), opt.day.getDate());
+		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), 1);
 		if ( !$(opt._target).data('days') ) $(opt._target).data('days', opt.days);
 		$(target).stop().empty();
 		for (var sm=0; sm < opt.showMonths; sm++)
@@ -121,6 +121,14 @@
 			function () {
 				var width = $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 );
 				$('.month', this).css('width', width).find('.monthName, .monthYear').css('width', ((width / 2) - 4 ));
+			});
+		$(window).load(
+			function () {
+				$('.jCal', target).each(
+					function () {
+						var width = $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 );
+						$('.month', this).css('width', width).find('.monthName, .monthYear').css('width', ((width / 2) - 4 ));
+					});
 			});
 	};	
 	function reSelectDates (target, day, days, opt) {

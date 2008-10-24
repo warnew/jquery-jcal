@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.5
+ *	version 0.3.6
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -91,7 +91,7 @@
 						$(moSel)
 							.css('clip','rect(' + diffOff + 'px ' + ( $(this).width() + ( pad * 2 ) ) + 'px '+ diffOff + 'px 0px)')
 							.animate({'opacity':.92,'clip':'rect(0px ' + ( $(this).width() + ( pad * 2 ) ) + 'px ' + $(moSel).height() + 'px 0px)'}, 'fast', function () {
-									$(this).parent().find('.monthSelectorShadow').bind('mouseover mouseout click', function () { $(this).parent().find('.monthSelector').remove(); $(this).remove(); });
+									$(this).parent().find('.monthSelectorShadow').bind('mouseover click', function () { $(this).parent().find('.monthSelector').remove(); $(this).remove(); });
 								})
 							.parent().find('.monthSelectorShadow').animate({'opacity':.1}, 'fast');
 						$('.jCalMo .monthSelect', e.data._target).bind('mouseover mouseout click', $.extend( {}, e.data ), 
@@ -171,6 +171,14 @@
 			function () {
 				var width = $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 );
 				$('.month', this).css('width', width).find('.monthName, .monthYear').css('width', ((width / 2) - 4 ));
+			});
+		$(window).load(
+			function () {
+				$('.jCal', target).each(
+					function () {
+						var width = $(this).parent().width() - ( $('.left', this).width() || 0 ) - ( $('.right', this).width() || 0 );
+						$('.month', this).css('width', width).find('.monthName, .monthYear').css('width', ((width / 2) - 4 ));
+					});
 			});
 	};	
 	function reSelectDates (target, day, days, opt) {
