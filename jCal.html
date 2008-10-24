@@ -24,11 +24,11 @@
 						for (var di=0; di < days; di++) {
 							var currDay = document.getElementById(this.cID + 'd_' +
 								( dCursor.getMonth() + 1 ) + '_' + dCursor.getDate() + '_' + dCursor.getFullYear());
-							$(currDay, this._target).append('<div class="dInfo">$199</div>');
+							$(currDay, this._target).append('<div class="dInfo"><span style="color:#ccc">$</span>1231</div>');
 							dCursor.setDate( dCursor.getDate() + 1 );
 						}
 						$('#calOneResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-							day.getMonth() + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+							( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
 						return true;
 					}
 				});
@@ -37,21 +37,31 @@
 				days:			2,
 				showMonths:		1,
 				sDate:			new Date(),
-				eDate:			new Date(),
 				dCheck:			function (day) {
 						return (day.getDay() != 6);
 					},
 				callback:		function (day, days) {
 						$('#calTwoResult').append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
-							day.getMonth() + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+							( day.getMonth() + 1 ) + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
 						return true;
 					}
 				});
 		});
 	</script>
 
+	<style>
+		.dInfo {
+			font-family:tahoma;
+			font-size:7pt;
+			color:#fff;
+			padding-top:1px;
+			padding-bottom:1px;
+			background:rgb(0, 102, 153);
+		}
+	</style>
+
 </head>
-<body>
+<body marginheight=0 marginwidth=0 topmargin=0 rightmargin=0 leftmargin=0>
 
 	<table width="100%">
 		<tr>
@@ -67,7 +77,7 @@
 				<td align=left id="calTwoResult" valign=top style="padding:10px; background:#E3E3E3;"></td>
 			<tr>
 	</table>
-	
+
 	<div id="ttt"></div>
 
 </body>

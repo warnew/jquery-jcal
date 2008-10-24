@@ -1,39 +1,15 @@
+/* default dimensions and justification for each month including title */
 .jCal {
-	width:189px;
+	/* each day width + border-left + border-right */
+	width:224px;
 	height:21px;
 	text-align:center;
 	vertical-align:top;
 }
-.jCalMask, .jCalMove {
-	position:absolute;
-	overflow:hidden;
-}
-.jCal .month {
-	height:16px;
-	width:157px;
-	text-align:center;
-	vertical-align:bottom;
-	font-family:Tahoma;
-	font-size:8pt;
-	color:#000000;
-	float:left;
-}
-.jCal .left {
-	vertical-align:middle;
-	width:16px;
-	height:16px;
-	cursor:pointer;
-	float:left;
-}
-.jCal .right {
-	vertical-align:middle;
-	width:16px;
-	height:16px;
-	cursor:pointer;
-	float:right;
-}
+/* default dimensions and justification for each month not including title */
 .jCalMo {
-	width:189px;
+	/* each day width + border-left + border-right */
+	width:224px;
 	float:left;
 	overflow:visible;
 	height:100%;
@@ -41,7 +17,21 @@
 	padding-left:2px;
 	white-space:nowrap;
 }
+/* top month display block - i.e. January */
+.jCal .month {
+	height:16px;
+	/* jCalMo - left/right button width */
+	width:208px;
+	text-align:center;
+	vertical-align:bottom;
+	font-family:Tahoma;
+	font-size:8pt;
+	color:#000000;
+	float:left;
+}
+/* day block dimensions and style - for all day blocks */
 .jCalMo .dow, .jCalMo .day, .jCalMo .pday, .jCalMo .aday, .jCalMo .overDay, .jCalMo .invday, .jCalMo .selectedDay {
+	width:30px;
 	font-family:Tahoma;
 	font-size:8pt;
 	color:#000000;
@@ -51,35 +41,64 @@
 	text-align:center;
 	cursor:default;
 	float:left;
-	width:25px;
 }
+/* day of week header specific style */
 .jCalMo .dow {
 	background:#EEEEEE url(eeGrad.gif) bottom repeat-x;
 	border-bottom:0px;
 }
+/* actual calendar day default style */
 .jCalMo .day, .jCalMo .invday {
-	height:25px;
-	text-align:left;
+	height:30px;
+	text-align:center;
 }
+/* selectable calendar day specific style */
 .jCalMo .day {
 	cursor:pointer;
 	background:#ffffff;
 }
+/* blacked-out calendar day specific style */
 .jCalMo .invday {
 	color:#808080;
 	background:#eeeeee;
 	text-decoration:line-through;
 }
+/* previous and subsequent months calendar day specific style */
 .jCalMo .pday, .jCalMo .aday {
-	height:25px;
+	height:30px;
 	background:#e3e3e3;
 	color:#CCCCCC;
 }
+/* selected day */
 .jCalMo .selectedDay {
 	color:#ffffff;
+	/* must use rgb() syntax for jquery.color.js compliance */
 	background:rgb(0, 143, 214);
 }
+/* mouseover hilighted selectable day */
 .jCalMo .overDay {
 	color:#ffffff;
+	/* must use rgb() syntax for jquery.color.js compliance */
 	background:rgb(0, 102, 153);
+}
+/* left month navigation button - no need to change */
+.jCal .left {
+	width:16px;
+	height:16px;
+	vertical-align:middle;
+	cursor:pointer;
+	float:left;
+}
+/* right month navigation button - no need to change */
+.jCal .right {
+	width:16px;
+	height:16px;
+	vertical-align:middle;
+	cursor:pointer;
+	float:right;
+}
+/* no need to change - this is for carousel opacity */
+.jCalMask, .jCalMove {
+	position:absolute;
+	overflow:hidden;
 }

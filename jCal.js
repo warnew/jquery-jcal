@@ -1,5 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
+ *	version 0.2.1
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -9,19 +10,18 @@
 	}
 	$.jCal = function (target, opt) {
 		opt = $.extend({
-			day:			new Date(),
-			days:			1,
-			showMonths:		1,
-			sDate:			new Date(),
-			eDate:			new Date(),
-			dCheck:			function (day) { return true; },
-			callback:		function (day, days) { return true; },
-			selectedBG:		'rgb(0, 143, 214)',
-			defaultBG:		'rgb(255, 255, 255)',
-			_target:		target,
+			day:			new Date(),									// date to drive first cal
+			days:			1,											// default number of days user can select
+			showMonths:		1,											// how many side-by-side months to show
+			dCheck:			function (day) { return true; },			// handler for checking if single date is valid or not
+			callback:		function (day, days) { return true; },		// callback function for click on date
+			selectedBG:		'rgb(0, 143, 214)',							// default bgcolor for selected date cell
+			defaultBG:		'rgb(255, 255, 255)',						// default bgcolor for unselected date cell
+			dayOffset:		0,											// 0=week start with sunday, 1=week starts with monday
+			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S'],		// days of week - change this to reflect your dayOffset
 			ml:				['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S']
+			_target:		target										// target DOM element - no need to set extend this variable
 		}, opt);
 		opt.day.setDate(1);
 		$(target).stop().empty();
@@ -133,15 +133,17 @@
 		var fd = new Date( new Date( opt.day.getTime() ).setDate(1) );
 		var ldlm = new Date( new Date( fd.getTime() ).setDate(0) );
 		var ld = new Date( new Date( new Date( fd.getTime() ).setMonth( fd.getMonth() + 1 ) ).setDate(0) );
-		for (var d=1; d < ( fd.getDay() + ld.getDate() + ( 7 - ld.getDay() ) ); d++)
+		var offsetDayStart = ( ( fd.getDay() < opt.dayOffset ) ? ( opt.dayOffset - 7 ) : 1 );
+		var offsetDayEnd = ( ( ld.getDay() < opt.dayOffset ) ? ( 7 - ld.getDay() ) : ld.getDay() );
+		for ( var d = offsetDayStart; d < ( fd.getDay() + ld.getDate() + ( 7 - offsetDayEnd ) ); d++)
 			$(target).append(
-				(( d <= fd.getDay() ) ? 
-					'<div id="' + opt.cID + 'd' + d + '" class="pday">' + ( ldlm.getDate() - ( fd.getDay() - d ) ) + '</div>' 
-					: ( ( d > ( fd.getDay() + ld.getDate() ) ) ?
-						'<div id="' + opt.cID + 'd' + d + '" class="aday">' + ( d - ( fd.getDay() + ld.getDate() ) ) + '</div>' 
-						: '<div id="' + opt.cID + 'd_' + (fd.getMonth() + 1) + '_' + ( d - fd.getDay() ) + '_' + fd.getFullYear() + '" class="' +
-							( ( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - fd.getDay() ) ) ) ) ? 'day' : 'invday' ) +
-							'">' + ( d - fd.getDay() )  + '</div>'
+				(( d <= ( fd.getDay() - opt.dayOffset ) ) ? 
+					'<div id="' + opt.cID + 'd' + d + '" class="pday">' + ( ldlm.getDate() - ( ( fd.getDay() - opt.dayOffset ) - d ) ) + '</div>' 
+					: ( ( d > ( ( fd.getDay() - opt.dayOffset ) + ld.getDate() ) ) ?
+						'<div id="' + opt.cID + 'd' + d + '" class="aday">' + ( d - ( ( fd.getDay() - opt.dayOffset ) + ld.getDate() ) ) + '</div>' 
+						: '<div id="' + opt.cID + 'd_' + (fd.getMonth() + 1) + '_' + ( d - ( fd.getDay() - opt.dayOffset ) ) + '_' + fd.getFullYear() + '" class="' +
+							( ( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - ( fd.getDay() - opt.dayOffset ) ) ) ) ) ? 'day' : 'invday' ) +
+							'">' + ( d - ( fd.getDay() - opt.dayOffset ) )  + '</div>'
 					) 
 				)
 			);
@@ -157,7 +159,7 @@
 					});
 			for (var di=0; di < opt.days; di++) {
 				var currDay = $(opt._target).find('#' + opt.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
-				if ( currDay == null || $(currDay).hasClass('invday') ) break;
+				if ( currDay.length == 0 || $(currDay).hasClass('invday') ) break;
 				$(currDay).toggleClass( ( (e.type == 'click') ? 'selectedDay' : 'overDay' ) );
 				if (e.type == 'click') $(currDay).stop().animate({ backgroundColor:opt.selectedBG }, 'fast', function () {
 					$(this).css('backgroundColor', opt.selectedBG); 
