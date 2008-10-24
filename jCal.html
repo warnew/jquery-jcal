@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+<head>
+
+	<script language="JavaScript" type="text/javascript" src="jquery.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jquery.color.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jCal.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="jCal.css">
+
+	<script>
+		$(document).ready(function () {
+			$('#calOne').jCal({
+				day:		new Date(),
+				days:		4,
+				showMonths:	2,
+				dCheck:		function (day) {
+						return (day.getDate() != 3);
+					},
+				callback:	function (day, days) {
+						$(this._target).find('.dInfo').remove();
+						var dCursor = new Date( day.getTime() );
+						for (var di=0; di < days; di++) {
+							var currDay = document.getElementById(this.cID + 'd_' +
+								( dCursor.getMonth() + 1 ) + '_' + dCursor.getDate() + '_' + dCursor.getFullYear());
+							$(currDay, this._target).append('<div class="dInfo">$199</div>');
+							dCursor.setDate( dCursor.getDate() + 1 );
+						}
+						$(this._target).append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+							day.getMonth() + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						return true;
+					}
+				});
+
+			$('#calTwo').jCal({
+				day:		new Date( (new Date()).setMonth( (new Date()).getMonth() + 2 ) ),
+				days:		2,
+				showMonths:	1,
+				sDate:		new Date(),
+				eDate:		new Date(),
+				dCheck:		function (day) {
+						return (day.getDay() != 6);
+					},
+				callback:	function (day, days) {
+						$(this._target).append('<div style="clear:both; font-size:7pt;">' + days + ' days starting ' +
+							day.getMonth() + '/' + day.getDate() + '/' + day.getFullYear() + '</div>');
+						return true;
+					}
+				});
+		});
+	</script>
+
+</head>
+<body>
+
+	<table width="100%">
+		<tr>
+			<td align=left id="calOne" valign=top style="padding:10px; background:#E3E3E3;">
+				loading calendar one
+			</td>
+			<td align=left id="calTwo" valign=top style="padding:10px; background:#E3E3E3;">
+				loading calendar two
+			</td>
+		<tr>
+	</table>
+
+</body>
+</html>

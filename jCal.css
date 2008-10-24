@@ -1,0 +1,82 @@
+.jCal {
+	padding-bottom:5px;
+	vertical-align:top;
+}
+.jCal .month {
+	padding-left:15px;
+	padding-right:15px;
+	vertical-align:middle;
+	font-family:Tahoma;
+	font-size:8pt;
+	color:#000000;
+	border:0px solid red;
+}
+.jCal .left {
+	vertical-align:middle;
+	width:16px;
+	height:16px;
+	text-align:left;
+	cursor:pointer;
+}
+.jCal .right {
+	vertical-align:middle;
+	width:16px;
+	height:16px;
+	text-align:right;
+	cursor:pointer;
+}
+.jCalMo {
+	float:left;
+	overflow:visible;
+	height:100%;
+	padding-right:5px;
+	white-space:nowrap;
+}
+.jCalMo .dow, .jCalMo .day, .jCalMo .pday, .jCalMo .aday, .jCalMo .overDay, .jCalMo .invday, .jCalMo .selectedDay {
+	padding:1px;
+	font-family:Tahoma;
+	font-size:7pt;
+	color:#000000;
+	border-bottom:1px solid #CCCCCC;
+	border-right:1px solid #CCCCCC;
+	border-left:1px solid #EEEEEE;
+	text-align:center;
+	cursor:default;
+	float:left;
+	width:25px;
+}
+.jCalMo .dow {
+	background:#EEEEEE url(eeGrad.gif) bottom repeat-x;
+	border-bottom:0px;
+}
+.jCalMo .day, .jCalMo .invday {
+	height:25px;
+	text-align:left;
+	width:21px;
+	padding-left:5px;
+}
+.jCalMo .day {
+	cursor:pointer;
+	background:#ffffff;
+}
+.jCalMo .invday {
+	color:#808080;
+	background:#eeeeee;
+	text-decoration:line-through;
+}
+.jCalMo .pday, .jCalMo .aday {
+	height:25px;
+	background:#e3e3e3;
+	color:#CCCCCC;
+}
+.jCalMo .selectedDay {
+	color:#ffffff;
+	background:rgb(0, 143, 214);
+}
+.jCalMo .overDay {
+	color:#ffffff;
+	background:rgb(0, 102, 153);
+}
+.jCalMo .day .dInfo {
+	color:lightgreen;
+}
