@@ -16,15 +16,15 @@
 				days:			4,
 				showMonths:		2,
 				dCheck:			function (day) {
+						if ( day.getTime() == (new Date('8/7/2008')).getTime() ) return false;
 						return (day.getDate() != 3);
 					},
 				callback:		function (day, days) {
 						$(this._target).find('.dInfo').remove();
 						var dCursor = new Date( day.getTime() );
 						for (var di=0; di < days; di++) {
-							var currDay = document.getElementById(this.cID + 'd_' +
-								( dCursor.getMonth() + 1 ) + '_' + dCursor.getDate() + '_' + dCursor.getFullYear());
-							$(currDay, this._target).append('<div class="dInfo"><span style="color:#ccc">$</span>1231</div>');
+							var currDay = $(this._target).find('[id*=d_' + ( dCursor.getMonth() + 1 ) + '_' + dCursor.getDate() + '_' + dCursor.getFullYear() + ']');
+							if (currDay.length) currDay.append('<div class="dInfo"><span style="color:#ccc">$</span>1231</div>');
 							dCursor.setDate( dCursor.getDate() + 1 );
 						}
 						// if calling the function on already selected day(s)

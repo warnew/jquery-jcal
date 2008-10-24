@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.1
+ *	version 0.3.2
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -85,7 +85,7 @@
 						$(this).children('.jCalMo:not(:last)').appendTo( $(opt._target) );
 						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
 						if ( typeof $(opt._target).data('day') == 'object' ) 
-							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'));
+							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'), opt);
 					});
 			});
 		$(target).find('.jCal .right').bind('click', 
@@ -122,22 +122,24 @@
 						$(this).children('.jCalMo:not(:first)').appendTo( $(opt._target) );
 						$('.jCalSpace, .jCalMask', opt._target).empty().remove();
 						if ( typeof $(opt._target).data('day') == 'object' ) 
-							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'));
+							reSelectDates(opt._target, $(opt._target).data('day'), $(opt._target).data('days'), opt);
 					});
 
 			});
 	}
 	
-	function reSelectDates (target, day, days) {
+	function reSelectDates (target, day, days, opt) {
 		var fDay = new Date(day.getTime());
 		var sDay = new Date(day.getTime());
-		for (var di=0; di < days; di++) {
-			if ( $(target).find('div[id*=d_' + (sDay.getMonth() + 1) + '_' + sDay.getDate() + '_' + sDay.getFullYear() + ']').length > 0 ) {
-				$(target).find('div[id*=d_' + (fDay.getMonth() + 1) + '_' + fDay.getDate() + '_' + fDay.getFullYear() + ']').click();
-				break;
+		for (var fC = false, di = 0, dC = days; di < dC; di++) {
+			var dF = $(target).find('div[id*=d_' + (sDay.getMonth() + 1) + '_' + sDay.getDate() + '_' + sDay.getFullYear() + ']');
+			if ( dF.length > 0 ) {
+				dF.stop().addClass('selectedDay');
+				fC = true;
 			}
 			sDay.setDate( sDay.getDate() + 1 );
 		}
+		if ( fC && typeof opt.callback == 'function' ) opt.callback( day, days );
 	}
 
 	function drawCal (target, opt) {
@@ -146,17 +148,18 @@
 		var fd = new Date( new Date( opt.day.getTime() ).setDate(1) );
 		var ldlm = new Date( new Date( fd.getTime() ).setDate(0) );
 		var ld = new Date( new Date( new Date( fd.getTime() ).setMonth( fd.getMonth() + 1 ) ).setDate(0) );
-		var offsetDayStart = ( ( fd.getDay() < opt.dayOffset ) ? ( opt.dayOffset - 7 ) : 1 );
+		var copt = {fd:fd.getDay(), lld:ldlm.getDate(), ld:ld.getDate()};
+		var offsetDayStart = ( ( copt.fd < opt.dayOffset ) ? ( opt.dayOffset - 7 ) : 1 );
 		var offsetDayEnd = ( ( ld.getDay() < opt.dayOffset ) ? ( 7 - ld.getDay() ) : ld.getDay() );
-		for ( var d = offsetDayStart; d < ( fd.getDay() + ld.getDate() + ( 7 - offsetDayEnd ) ); d++)
+		for ( var d = offsetDayStart, dE = ( copt.fd + copt.ld + ( 7 - offsetDayEnd ) ); d < dE; d++)
 			$(target).append(
-				(( d <= ( fd.getDay() - opt.dayOffset ) ) ? 
-					'<div id="' + opt.cID + 'd' + d + '" class="pday">' + ( ldlm.getDate() - ( ( fd.getDay() - opt.dayOffset ) - d ) ) + '</div>' 
-					: ( ( d > ( ( fd.getDay() - opt.dayOffset ) + ld.getDate() ) ) ?
-						'<div id="' + opt.cID + 'd' + d + '" class="aday">' + ( d - ( ( fd.getDay() - opt.dayOffset ) + ld.getDate() ) ) + '</div>' 
-						: '<div id="' + opt.cID + 'd_' + (fd.getMonth() + 1) + '_' + ( d - ( fd.getDay() - opt.dayOffset ) ) + '_' + fd.getFullYear() + '" class="' +
-							( ( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - ( fd.getDay() - opt.dayOffset ) ) ) ) ) ? 'day' : 'invday' ) +
-							'">' + ( d - ( fd.getDay() - opt.dayOffset ) )  + '</div>'
+				(( d <= ( copt.fd - opt.dayOffset ) ) ? 
+					'<div id="' + opt.cID + 'd' + d + '" class="pday">' + ( copt.lld - ( ( copt.fd - opt.dayOffset ) - d ) ) + '</div>' 
+					: ( ( d > ( ( copt.fd - opt.dayOffset ) + copt.ld ) ) ?
+						'<div id="' + opt.cID + 'd' + d + '" class="aday">' + ( d - ( ( copt.fd - opt.dayOffset ) + copt.ld ) ) + '</div>' 
+						: '<div id="' + opt.cID + 'd_' + (fd.getMonth() + 1) + '_' + ( d - ( copt.fd - opt.dayOffset ) ) + '_' + fd.getFullYear() + '" class="' +
+							( ( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - ( copt.fd - opt.dayOffset ) ) ) ) ) ? 'day' : 'invday' ) +
+							'">' + ( d - ( copt.fd - opt.dayOffset ) )  + '</div>'
 					) 
 				)
 			);
@@ -168,15 +171,12 @@
 			var sDate = new Date ( osDate.getTime() );
 			if (e.type == 'click')
 				$('div[id*=d_]', opt._target).stop().removeClass('selectedDay').removeClass('overDay').css('backgroundColor', '');
-			for (var di=0; di < opt.days; di++) {
+			for (var di = 0, ds = opt.days; di < ds; di++) {
 				var currDay = $(opt._target).find('#' + opt.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
 				if ( currDay.length == 0 || $(currDay).hasClass('invday') ) break;
-				if ( e.type == 'mouseover' )
-					$(currDay).addClass('overDay');
-				else if ( e.type == 'mouseout' )
-					$(currDay).stop().removeClass('overDay').css('backgroundColor', '');
-				else if ( e.type == 'click' )
-					$(currDay).stop().addClass('selectedDay').animate({ backgroundColor:opt.selectedBG }, 200);
+				if ( e.type == 'mouseover' )		$(currDay).addClass('overDay');
+				else if ( e.type == 'mouseout' )	$(currDay).stop().removeClass('overDay').css('backgroundColor', '');
+				else if ( e.type == 'click' )		$(currDay).stop().addClass('selectedDay');
 				sDate.setDate( sDate.getDate() + 1 );
 			}
 			if (e.type == 'click') {
