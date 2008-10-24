@@ -14,8 +14,8 @@
 			selectedBG:		'rgb(0, 143, 214)',
 			defaultBG:		'rgb(255, 255, 255)',
 			_target:		target,
-			ml:				['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			ml:			['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+			ms:			['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S']
 		}, opt);
 		opt.day.setDate(1);
@@ -23,7 +23,7 @@
 		for (var sm=0; sm < opt.showMonths; sm++)
 			$(target).append('<div class="jCalMo"></div>');
 		opt.cID = 'c' + $('.jCalMo').length;
-		$('.jCalMo', target).each(
+		$(target).find('.jCalMo').each(
 			function (ind) {
 				drawCal($(this), $.extend( {}, opt, { 'ind':ind, 
 						'day':new Date( new Date( opt.day.getTime() ).setMonth( new Date( opt.day.getTime() ).getMonth() + ind ) ) }
@@ -49,7 +49,7 @@
 					) 
 				)
 			);
-		$('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+1)', target).before( '<br style="clear:both; font-size:0.1em;" />' );
+		$(target).find('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+1)').before( '<br style="clear:both; font-size:0.1em;" />' );
 		$(target).prepend( '<div style="' + ( (opt.ind == 0) ? 'text-align:left;' : 
 					( (opt.ind == ( opt.showMonths - 1 )) ? 'text-align:right;' : '' ) ) + '">' + 
 				'<div class="jCal">' + 
@@ -58,28 +58,28 @@
 					( (opt.ind == ( opt.showMonths - 1 )) ? '<span class="right"><img src="_right.gif"></span>' : '' ) +
 				'</div>' +
 			'</div>');
-		$('.jCal .left', target).bind("click", function (e) {
+		$(target).find('.jCal .left').bind("click", function (e) {
 				opt.day.setMonth( opt.day.getMonth() - 1);
 				$.jCal($(target).parent(), opt);
 			});
-		$('.jCal .right', target).bind("click", function (e) {
+		$(target).find('.jCal .right').bind("click", function (e) {
 				opt.day.setMonth( opt.day.getMonth() + ( (opt.showMonths == 1) ? 1 : 0 ) );
 				$.jCal($(target).parent(), opt);
 			});
-		$('div[id^=' + opt.cID + 'd_]:not(.invday)', target).bind("mouseover mouseout click", function(e){
+		$(target).find('div[id^=' + opt.cID + 'd_]:not(.invday)').bind("mouseover mouseout click", function(e){
 			var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
 			var sDate = new Date ( osDate.getTime() );
 			if (e.type == 'click') 
-				$('div[id^=' + opt.cID + 'd_].selectedDay', $(target).parent()).removeClass('selectedDay').animate(
+				$('div[id^=' + opt.cID + 'd_].selectedDay', $(opt._target).parent()).removeClass('selectedDay').animate(
 					{ backgroundColor:opt.defaultBG }, 'fast', function () {
 						$(this).css('backgroundColor', '');
 					});
 			for (var di=0; di < opt.days; di++) {
-				var currDay = document.getElementById(opt.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
+				var currDay = $(opt._target).find('#' + opt.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
 				if ( currDay == null || $(currDay).hasClass('invday') ) break;
-				$(currDay, target).toggleClass( ( (e.type == 'click') ? 'selectedDay' : 'overDay' ) );
+				$(currDay).toggleClass( ( (e.type == 'click') ? 'selectedDay' : 'overDay' ) );
 				if (e.type == 'click') $(currDay).stop().animate({ backgroundColor:opt.selectedBG }, 'fast', function () {
-					$(this).css('backgroundColor', opt.selectedBG);
+					$(this).css('backgroundColor', opt.selectedBG); 
 				});
 				else $(currDay).css('backgroundColor', '').stop();
 				sDate.setDate( sDate.getDate() + 1 );
