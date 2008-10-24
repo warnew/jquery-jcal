@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.4
+ *	version 0.3.5
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -25,7 +25,7 @@
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			_target:		target										// target DOM element - no need to set extend this variable
 		}, opt);
-		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), opt.day.getDate());
+		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), 1);
 		if ( !$(opt._target).data('days') ) $(opt._target).data('days', opt.days);
 		$(target).stop().empty();
 		for (var sm=0; sm < opt.showMonths; sm++)
