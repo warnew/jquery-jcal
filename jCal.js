@@ -1,6 +1,6 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.2.1
+ *	version 0.2.2
  * Author: Jim Palmer
  * Released under MIT license.
  */
@@ -18,6 +18,7 @@
 			selectedBG:		'rgb(0, 143, 214)',							// default bgcolor for selected date cell
 			defaultBG:		'rgb(255, 255, 255)',						// default bgcolor for unselected date cell
 			dayOffset:		0,											// 0=week start with sunday, 1=week starts with monday
+			forceWeek:		false,										// true=force selection at start of week, false=select days out from selected day
 			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S'],		// days of week - change this to reflect your dayOffset
 			ml:				['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -151,6 +152,7 @@
 		$(target).find('div[id^=' + opt.cID + 'd_]:not(.invday)').bind("mouseover mouseout click", function(e){
 			if ($('.jCalMask', opt._target).length > 0) return false;
 			var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
+			if (opt.forceWeek) osDate.setDate( osDate.getDate() + (opt.dayOffset - osDate.getDay()) );
 			var sDate = new Date ( osDate.getTime() );
 			if (e.type == 'click') 
 				$('div[id^=' + opt.cID + 'd_].selectedDay', $(opt._target).parent()).removeClass('selectedDay').animate(
@@ -171,3 +173,4 @@
 		});
 	}
 })(jQuery);
+
