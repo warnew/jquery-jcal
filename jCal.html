@@ -6,9 +6,9 @@
 	<script language="JavaScript" type="text/javascript" src="jquery.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jquery.color.js"></script>
 	<script language="JavaScript" type="text/javascript" src="jquery.animate.clip.js"></script>
-	<script language="JavaScript" type="text/javascript" src="jCal.min.js"></script>
+	<script language="JavaScript" type="text/javascript" src="jCal.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="jCal.css">
+	<link rel="stylesheet" type="text/css" href="jCal.small.css">
 
 	<script>
 		$(document).ready(function () {
@@ -17,9 +17,16 @@
 				days:			4,
 				showMonths:		2,
 				monthSelect:	true,
+				drawBack:		function () {
+						return false;
+					},
 				dCheck:			function (day) {
-						if ( day.getTime() == (new Date('8/7/2008')).getTime() ) return false;
-						return (day.getDate() != 3);
+						if ( day.getTime() == (new Date('8/7/2008')).getTime() )
+							return 'invday';
+						else if (day.getDate() != 3)
+							return 'day';
+						else
+							return 'invday';
 					},
 				callback:		function (day, days) {
 						$('#calOneDays').val( days );
@@ -47,10 +54,16 @@
 				day:			new Date( (new Date()).setMonth( (new Date()).getMonth() + 2 ) ),
 				days:			2,
 				showMonths:		1,
+				drawBack:		function () {
+						return false;
+					},
 				monthSelect:	true,
 				sDate:			new Date(),
 				dCheck:			function (day) {
-						return (day.getDay() != 6);
+						if (day.getDay() != 6)
+							return 'day';
+						else
+							return 'invday';
 					},
 				callback:		function (day, days) {
 						$('#calTwoDays').val( days );

@@ -27,12 +27,14 @@
 	color:#000000;
 	cursor:pointer;
 	float:left;
+	
 }
 /* month name per calendar style - includes left/right padding and alignment */
 .jCal .monthName {
 	padding-left:2px;
 	padding-right:2px; 
 	text-align:right;
+	width:92px;
 }
 /* year per calendar style - includes left/right padding and alignment */
 .jCal .monthYear {
@@ -40,6 +42,11 @@
 	padding-left:2px;
 	padding-right:2px;
 	text-align:left;
+	width:92px;
+}
+/* width of monthName + monthYear */
+.jCal .month {
+	width:192px;
 }
 /* hilight style for new month combobox pulldown for hover */
 .jCal .monthSelect {

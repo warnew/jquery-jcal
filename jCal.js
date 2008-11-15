@@ -7,6 +7,7 @@
 (function($) {
 	$.fn.jCal = function (opt) {
 		$.jCal(this, opt);
+		return this;
 	};
 	$.jCal = function (target, opt) {
 		opt = $.extend({
@@ -14,7 +15,7 @@
 			days:			1,											// default number of days user can select
 			showMonths:		1,											// how many side-by-side months to show
 			monthSelect:	false,										// show selectable month and year ranges via animated comboboxen
-			dCheck:			function (day) { return true; },			// handler for checking if single date is valid or not
+			dCheck:			function (day) { return 'day'; },			// handler for checking if single date is valid or not - returns class to add to day cell
 			callback:		function (day, days) { return true; },		// callback function for click on date
 			drawBack:		function () { return true; },				// callback function for month being drawn
 			selectedBG:		'rgb(0, 143, 214)',							// default bgcolor for selected date cell
@@ -237,4 +238,5 @@
 					}
 			});
 	};
+	
 })(jQuery);
