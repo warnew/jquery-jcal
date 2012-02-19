@@ -1,7 +1,7 @@
 /*
  * jCal calendar multi-day and multi-month datepicker plugin for jQuery
- *	version 0.3.7
- * Author: Jim Palmer
+ * Version 0.3.8
+ * Author: Jim Palmer and Zoltan Lengyel
  * Released under MIT license.
  */
 (function($) {
