@@ -23,6 +23,7 @@
 			dayOffset:		0,											// 0=week start with sunday, 1=week starts with monday
 			scrollSpeed:	150,										// default .animate() speed used
 			forceWeek:		false,										// true=force selection at start of week, false=select days out from selected day
+      forceDay: -1,  // force the selection at the nth day of the week. -1 = we force nothing (as 0 is sunday)
 			dow:			['S', 'M', 'T', 'W', 'T', 'F', 'S'],		// days of week - change this to reflect your dayOffset
 			ml:				['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 			ms:				['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -220,7 +221,12 @@
 			function(e){
 					if ($('.jCalMask', e.data._target).length > 0) return false;
 					var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
-					if (e.data.forceWeek) osDate.setDate( osDate.getDate() + (e.data.dayOffset - osDate.getDay()) );
+					if (e.data.forceWeek) {
+            osDate.setDate( osDate.getDate() + (e.data.dayOffset - osDate.getDay()) );
+          }
+					if (e.data.forceDay >= 0) {
+            osDate.setDate( osDate.getDate() + (e.data.dayOffset+e.data.forceDay - osDate.getDay()) );
+          }
 					var sDate = new Date ( osDate.getTime() );
 					if (e.type == 'click')
             if ($(this).hasClass('invday')) return; ;
