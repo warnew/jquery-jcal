@@ -209,19 +209,21 @@
 					: ( ( d > ( ( copt.fd - opt.dayOffset ) + copt.ld ) ) ?
 						'<div id="' + opt.cID + 'd' + d + '" class="aday">' + ( d - ( ( copt.fd - opt.dayOffset ) + copt.ld ) ) + '</div>' 
 						: '<div id="' + opt.cID + 'd_' + (fd.getMonth() + 1) + '_' + ( d - ( copt.fd - opt.dayOffset ) ) + '_' + fd.getFullYear() + '" class="' +
-							( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - ( copt.fd - opt.dayOffset ) ) ) ) || 'invday' ) +
+							( opt.dCheck( new Date( (new Date( fd.getTime() )).setDate( d - ( copt.fd - opt.dayOffset ) ) ) ) ? 'day' : 'invday' ) +
 							'">' + ( d - ( copt.fd - opt.dayOffset ) )  + '</div>'
 					) 
 				)
 			);
 		$(target).find('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+2)').before( '<br style="clear:both;" />' );
-		$(target).find('div[id^=' + opt.cID + 'd_]:not(.invday)').bind("mouseover mouseout click", $.extend( {}, opt ),
+    //binding the events to the days
+		$(target).find('div[id^=' + opt.cID + 'd_]').bind("mouseover mouseout click", $.extend( {}, opt ),
 			function(e){
 					if ($('.jCalMask', e.data._target).length > 0) return false;
 					var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
 					if (e.data.forceWeek) osDate.setDate( osDate.getDate() + (e.data.dayOffset - osDate.getDay()) );
 					var sDate = new Date ( osDate.getTime() );
 					if (e.type == 'click')
+            if ($(this).hasClass('invday')) return; ;
 						$('div[id*=d_]', e.data._target).stop().removeClass('selectedDay').removeClass('overDay');
 					for (var di = 0, ds = $(e.data._target).data('days'); di < ds; di++) {
 						var currDay = $(e.data._target).find('#' + e.data.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
