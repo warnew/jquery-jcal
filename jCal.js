@@ -31,6 +31,7 @@
 		}, opt);
 		opt.day = new Date(opt.day.getFullYear(), opt.day.getMonth(), 1);
 		if ( !$(opt._target).data('days') ) $(opt._target).data('days', opt.days);
+		if ( !$(opt._target).data('forceDay') ) $(opt._target).data('forceDay', opt.forceDay);
 		$(target).stop().empty();
 		for (var sm=0; sm < opt.showMonths; sm++)
 			$(target).append('<div class="jCalMo"></div>');
@@ -192,6 +193,7 @@
 			}
 			sDay.setDate( sDay.getDate() + 1 );
 		}
+    //console.log('called');
 		if ( fC && typeof opt.callback == 'function' ) opt.callback( day, days );
 	};
 	function drawCal (target, opt) {
@@ -216,31 +218,58 @@
 				)
 			);
 		$(target).find('div[id^=' + opt.cID + 'd]:first, div[id^=' + opt.cID + 'd]:nth-child(7n+2)').before( '<br style="clear:both;" />' );
+
+
+    var _realdate = function (e,date) {
+       // current date + ( first day of the week + forced  - day of the week)
+//       alert(e.data._target);
+       return date.getDate() + (e.data.dayOffset+$(e.data._target).data('forceDay') - date.getDay());
+    }
+
+    var _hilite_days = function (e,sDate) {
+	  	for (var di = 0, ds = $(e.data._target).data('days'); di < ds; di++) {
+				var currDay = $(e.data._target).find('#' + e.data.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
+				if ( currDay.length == 0 || $(currDay).hasClass('invday') ) break;
+				if ( e.type == 'mouseover' )		$(currDay).addClass('overDay');
+				else if ( e.type == 'mouseout' )	$(currDay).stop().removeClass('overDay');
+				else if ( e.type == 'click' )	{
+            //console.log('clicked');
+          	$(currDay).stop().addClass('selectedDay');
+        }
+				sDate.setDate( sDate.getDate() + 1 );
+			}
+      return di;
+    }
+
+
     //binding the events to the days
+
+    // now  it works like this: we walk the days and bind to them.
+    // we get the current date from the day (osDate). if we're forcing, we change this date to the forced one,
+    // otherwise leave it at the current date.
+    // every day will highlight/click osDate
+
+    // dayforce for a given week should(?) highlight the forced day(s)
 		$(target).find('div[id^=' + opt.cID + 'd_]').bind("mouseover mouseout click", $.extend( {}, opt ),
 			function(e){
 					if ($('.jCalMask', e.data._target).length > 0) return false;
 					var osDate = new Date ( $(this).attr('id').replace(/c[0-9]{1,}d_([0-9]{1,2})_([0-9]{1,2})_([0-9]{4})/, '$1/$2/$3') );
-					if (e.data.forceWeek) {
-            osDate.setDate( osDate.getDate() + (e.data.dayOffset - osDate.getDay()) );
-          }
-					if (e.data.forceDay >= 0) {
-            osDate.setDate( osDate.getDate() + (e.data.dayOffset+e.data.forceDay - osDate.getDay()) );
-          }
+          if ($(this).hasClass('invday')) return false;
+          osDate.setDate(_realdate(e,osDate));
 					var sDate = new Date ( osDate.getTime() );
-					if (e.type == 'click')
-            if ($(this).hasClass('invday')) return; ;
-						$('div[id*=d_]', e.data._target).stop().removeClass('selectedDay').removeClass('overDay');
-					for (var di = 0, ds = $(e.data._target).data('days'); di < ds; di++) {
-						var currDay = $(e.data._target).find('#' + e.data.cID + 'd_' + ( sDate.getMonth() + 1 ) + '_' + sDate.getDate() + '_' + sDate.getFullYear());
-						if ( currDay.length == 0 || $(currDay).hasClass('invday') ) break;
-						if ( e.type == 'mouseover' )		$(currDay).addClass('overDay');
-						else if ( e.type == 'mouseout' )	$(currDay).stop().removeClass('overDay');
-						else if ( e.type == 'click' )		$(currDay).stop().addClass('selectedDay');
-						sDate.setDate( sDate.getDate() + 1 );
-					}
+					if (e.type == 'click') {
+          	if (e.data.forceDay >= 0) {
+              if (osDate.getDate() != _realdate(e,osDate)) {
+                return false;
+              }
+            }
+            $('div[id*=d_]', e.data._target).stop().removeClass('selectedDay');
+            //console.log('cleared');
+          }
+          di = _hilite_days(e,sDate);
 					if (e.type == 'click') {
 						e.data.day = osDate;
+            //console.log('xxe');
 						if ( e.data.callback( osDate, di, this ) )
 							$(e.data._target).data('day', e.data.day).data('days', di);
 					}
